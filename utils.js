@@ -1,4 +1,4 @@
-var file_system = require("fs");
+var fs = require("fs");
 var archiver = require("archiver");
 var path = require("path");
 
@@ -27,11 +27,11 @@ function archiveFolder(foldername = "", move = true) {
     : foldername;
   archiveName = `${archiveName}.zip`;
 
-  var output = file_system.createWriteStream(path.join(__dirname, archiveName));
+  var output = fs.createWriteStream(path.join(__dirname, archiveName));
 
   output.on("close", function () {
     console.log("Archive Successful: ", getSize(archive.pointer()));
-    if (move) moveToDownloads(archiveName);
+    if (move) moveToFolder(archiveName);
     deleteFolder(foldername);
   });
 
@@ -46,10 +46,10 @@ function archiveFolder(foldername = "", move = true) {
   archive.finalize();
 }
 
-function moveToDownloads(filename) {
+function moveToFolder(filename) {
   mv(
     path.join(__dirname, filename),
-    path.join(__dirname, "downloads", filename),
+    path.join(__dirname, "server", "public", "files", filename),
     { mkdirp: true },
     function (err) {
       // done. it first created all the necessary directories, and then
@@ -68,6 +68,15 @@ function deleteFolder(foldername) {
   });
 }
 
+// get list of files in a directory
+function getFiles(dir) {
+  const files = [];
+  fs.readdirSync(dir).forEach((file) => {
+    files.push(file);
+  });
+  return files;
+}
+
 if (process.argv.includes("--archive")) {
   const pos = process.argv.indexOf("--archive");
   const _foldername = process.argv[pos + 1];
@@ -76,7 +85,8 @@ if (process.argv.includes("--archive")) {
 
 module.exports = {
   archiveFolder,
-  moveToDownloads,
+  moveToFolder,
   getSize,
   getSpeed,
+  getFiles,
 };
