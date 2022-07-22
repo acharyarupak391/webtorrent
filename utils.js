@@ -22,6 +22,7 @@ const getSize = (bytes) => {
 const getSpeed = (speedInBytes) => getSize(speedInBytes) + "/s";
 
 function archiveFolder(foldername = "", move = true) {
+  console.log("Archiving...")
   let archiveName = foldername.endsWith("/")
     ? foldername.substring(0, foldername.length - 1)
     : foldername;
@@ -57,22 +58,30 @@ function moveToFolder(filename) {
       // to dest and then rimraf to remove the source dir
 
       if (err) console.log("Error in moving: ", err);
-      else console.log("moved to downloads");
+      else console.log("moved to folder");
     }
   );
 }
 
 function deleteFolder(foldername) {
   rimraf(path.join(__dirname, foldername), function () {
-    console.log(foldername, " deleted");
+    console.log(foldername, "deleted");
+    process.exit();
   });
+}
+
+function getReadableFileSize(filename) {
+  var stats = fs.statSync(filename);
+  var fileSizeInBytes = getSize(stats.size);
+  return fileSizeInBytes;
 }
 
 // get list of files in a directory
 function getFiles(dir) {
   const files = [];
   fs.readdirSync(dir).forEach((file) => {
-    files.push(file);
+    const size = getReadableFileSize(path.join(dir, file));
+    files.push({name: file, size});
   });
   return files;
 }

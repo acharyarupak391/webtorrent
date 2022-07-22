@@ -8,9 +8,9 @@ app.use(express.static(__dirname + "/public"));
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
-app.get("/", function (res) {
+app.get("/", function (req, res) {
   const files = getFiles(path.join(__dirname, "public", "files"));
   res.render("index", { files });
 });
 
-app.listen(3000, "0.0.0.0");
+app.listen(8080, "0.0.0.0");

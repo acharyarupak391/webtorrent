@@ -15,7 +15,9 @@
     "nodemon": "^2.0.19"
   },
   "scripts": {
-    "server": "nodemon server/app.js"
+    "torrent": "node index.js",
+    "dev": "nodemon server/app.js",
+    "server": "node server/app.js"
   },
   "author": "ra",
   "license": "ISC",

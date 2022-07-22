@@ -3,7 +3,7 @@ const path = require("path");
 const WebTorrent = require("webtorrent");
 
 const cliProgress = require("cli-progress");
-const { getSize, getSpeed } = require("./utils");
+const { getSize, getSpeed, archiveFolder } = require("./utils");
 
 const t1 = new Date().getTime();
 
@@ -70,22 +70,27 @@ client.add(magnet, function (torrent) {
 
     readStream.on("end", () => {
       const t2 = new Date().getTime();
-      let _diff = ((t2 - _t) / (1000 * 60)).toFixed(2);
+      // let _diff = ((t2 - _t) / (1000 * 60)).toFixed(2);
       downloaded += 1;
-      console.log(
-        `\n${file.name} [${(file.length / (1024 * 1024)).toFixed(2)} MB]`
-      );
-      console.log(
-        `\tDownloaded...  [${downloaded} out of ${totalFiles}] (${_diff} min)`
-      );
+      // console.log(
+      //   `\n${file.name} [${(file.length / (1024 * 1024)).toFixed(2)} MB]`
+      // );
+      // console.log(
+      //   `\tDownloaded...  [${downloaded} out of ${totalFiles}] (${_diff} min)`
+      // );
 
       if (downloaded === totalFiles) {
         singleBar.stop();
         let diff = ((t2 - t1) / (1000 * 60)).toFixed(2);
+        console.clear();
         console.log(`\n_________ Download Complete _________ [${diff} min]`);
         client.destroy();
         readStream.destroy();
         writeStream.destroy();
+
+        if (process.argv.includes("--archive")) archiveFolder(torrent.name);
+        else process.exit();
+        
       }
       _t = t2;
     });
