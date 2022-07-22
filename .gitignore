@@ -3,3 +3,4 @@ package-lock.json
 .vscode
 downloads
 package.json
+server/public/files
