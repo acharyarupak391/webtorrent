@@ -3,15 +3,11 @@ const path = require("path");
 const WebTorrent = require("webtorrent");
 
 const cliProgress = require("cli-progress");
-
-// var file = fs.statSync(path.join(__dirname, "Kool & The Gang - Ladies' Night (1979 - R&B) [Flac 16-44]", "05. Kool & The Gang - Tonight's The Night.flac"));
-// console.log((file.size / (1024 * 1024)).toFixed(2))
+const { getSize, getSpeed } = require("./utils");
 
 const t1 = new Date().getTime();
 
 const client = new WebTorrent();
-const magnetURI =
-  "magnet:?xt=urn:btih:0B4A63C5807F8B625A36A39E0F672F1B9B352BEE&dn=Platoon+%281986%29+%5B1080p%5D+%5BYTS.MX%5D&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fp4p.arenabg.ch%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337";
 
 // taking magnetURI from command line argument
 const magnet = process.argv[2];
@@ -19,16 +15,6 @@ const magnet = process.argv[2];
 // using a .torrent file
 // const torrentFileName = "[limetorrents.pro]Free.Guy.2021.720p.HDCAM.torrent";
 // const torrentFileBuffer = fs.readFileSync(path.join(__dirname, torrentFileName));
-
-const getSize = (bytes) => {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
-};
-
-const getSpeed = speedInBytes => `${getSize(speedInBytes)}\\s`;
 
 client.on("error", (e) => {
   console.log("error: ", e.message);
