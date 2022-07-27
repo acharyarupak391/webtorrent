@@ -3,7 +3,7 @@ const path = require("path");
 const WebTorrent = require("webtorrent");
 
 const cliProgress = require("cli-progress");
-const { getSize, getSpeed, archiveFolder } = require("./utils");
+const { getSize, getSpeed, archiveFolder, getTimeInterval } = require("./utils");
 
 const t1 = new Date().getTime();
 
@@ -81,9 +81,9 @@ client.add(magnet, function (torrent) {
 
       if (downloaded === totalFiles) {
         singleBar.stop();
-        let diff = ((t2 - t1) / (1000 * 60)).toFixed(2);
+        let diff = getTimeInterval((t2 - t1) / 1000);
         console.clear();
-        console.log(`\n_________ Download Complete _________ [${diff} min]`);
+        console.log(`\n_________ Download Complete _________\n ${getSize(torrent.length)} [${diff}]`);
         client.destroy();
         readStream.destroy();
         writeStream.destroy();

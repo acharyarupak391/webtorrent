@@ -21,8 +21,22 @@ const getSize = (bytes) => {
 
 const getSpeed = (speedInBytes) => getSize(speedInBytes) + "/s";
 
+const getTimeInterval = (seconds) => {
+  const _seconds = Math.floor(seconds);
+  if (_seconds < 60) return `${_seconds} seconds`;
+  if (_seconds < 60 * 60) {
+    const minutes = Math.floor(_seconds / 60);
+    const secondsLeft = _seconds - minutes * 60;
+    return `${minutes} minutes ${secondsLeft} seconds`;
+  } else {
+    const hours = Math.floor(_seconds / 60 / 60);
+    const minutesLeft = Math.floor((_seconds - hours * 60 * 60) / 60);
+    return `${hours} hours ${minutesLeft} minutes`;
+  }
+};
+
 function archiveFolder(foldername = "", move = true) {
-  console.log("Archiving...")
+  console.log("Archiving...");
   let archiveName = foldername.endsWith("/")
     ? foldername.substring(0, foldername.length - 1)
     : foldername;
@@ -48,17 +62,14 @@ function archiveFolder(foldername = "", move = true) {
 }
 
 function moveToFolder(filename) {
+  const folderToMove = path.join(__dirname, "server", "public", "files");
   mv(
     path.join(__dirname, filename),
-    path.join(__dirname, "server", "public", "files", filename),
+    path.join(folderToMove, filename),
     { mkdirp: true },
     function (err) {
-      // done. it first created all the necessary directories, and then
-      // tried fs.rename, then falls back to using ncp to copy the dir
-      // to dest and then rimraf to remove the source dir
-
       if (err) console.log("Error in moving: ", err);
-      else console.log("moved to folder");
+      else console.log("moved to folder: ", folderToMove);
     }
   );
 }
@@ -81,7 +92,7 @@ function getFiles(dir) {
   const files = [];
   fs.readdirSync(dir).forEach((file) => {
     const size = getReadableFileSize(path.join(dir, file));
-    files.push({name: file, size});
+    files.push({ name: file, size });
   });
   return files;
 }
@@ -98,4 +109,5 @@ module.exports = {
   getSize,
   getSpeed,
   getFiles,
+  getTimeInterval,
 };

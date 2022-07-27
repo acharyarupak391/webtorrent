@@ -16,6 +16,7 @@
   },
   "scripts": {
     "torrent": "node index.js",
+    "zip": "node utils.js --archive",
     "dev": "nodemon server/app.js",
     "server": "node server/app.js"
   },
