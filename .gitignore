@@ -4,3 +4,4 @@ package-lock.json
 downloads
 package.json
 server/public/files
+.env
