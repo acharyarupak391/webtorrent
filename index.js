@@ -3,7 +3,7 @@ const path = require("path");
 const WebTorrent = require("webtorrent");
 
 const cliProgress = require("cli-progress");
-const { getSize, getSpeed, archiveFolder, getTimeInterval } = require("./utils");
+const { getSize, getSpeed, archiveFolder, getTimeInterval, moveToServer } = require("./utils");
 
 const t1 = new Date().getTime();
 
@@ -89,6 +89,7 @@ client.add(magnet, function (torrent) {
         writeStream.destroy();
 
         if (process.argv.includes("--archive")) archiveFolder(torrent.name);
+        else if(process.argv.includes("--move-to-server")) moveToServer(torrent.name);
         else process.exit();
         
       }

@@ -6,12 +6,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Download Files</title>
 </head>
+style(type="text/css").
+  .pl-5 {
+    padding-left: 10px
+  }
 <body>
   div Files:
   each file, i in files
-    - var path = "/files/" + file.name 
-    div #{i+1}. 
-      a(href=path, download) #{file.name} 
-      #{file.size}
+    div.pl-5
+      if(file.type === "folder")
+        details
+          summary #{file.name}
+          each f, idx in file.files
+            if(f.type !== "folder")
+              div.pl-5 #{idx+1}. 
+                - var path = "/files/" + file.name + "/" + f.name 
+                a(href=path download) #{f.name} 
+                #{f.size}
+
+            else
+              details.pl-5
+                summary #{f.name}
+                each f2, idx2 in f.files
+                  if(f2.type !== "folder")
+                    div.pl-5 #{idx2+1}. 
+                      - var path = "/files/" + file.name + "/" + f.name + "/" + f2.name
+                      a(href=path download) #{f2.name} 
+                      #{f2.size}
+
+      else
+        - var path = "/files/" + file.name
+        div #{i+1}. 
+          a(href=path, download) #{file.name} 
+          #{file.size}
 </body>
 </html>

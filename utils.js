@@ -46,7 +46,11 @@ function archiveFolder(foldername = "", move = true) {
 
   output.on("close", function () {
     console.log("Archive Successful: ", getSize(archive.pointer()));
-    if (move) moveToFolder(archiveName);
+    if (move) {
+      const source = path.join(__dirname, archiveName);
+      const dest = path.join(__dirname, "server", "public", "files", archiveName);
+      moveToFolder(source, dest);
+    }
     deleteFolder(foldername);
   });
 
@@ -61,15 +65,14 @@ function archiveFolder(foldername = "", move = true) {
   archive.finalize();
 }
 
-function moveToFolder(filename) {
-  const folderToMove = path.join(__dirname, "server", "public", "files");
+function moveToFolder(source, dest) {
   mv(
-    path.join(__dirname, filename),
-    path.join(folderToMove, filename),
+    source,
+    dest,
     { mkdirp: true },
     function (err) {
       if (err) console.log("Error in moving: ", err);
-      else console.log("moved to folder: ", folderToMove);
+      else console.log("moved to folder: ", dest);
     }
   );
 }
@@ -87,20 +90,49 @@ function getReadableFileSize(filename) {
   return fileSizeInBytes;
 }
 
+// check if given path is a directory
+function isDir(path) {
+  try {
+      var stat = fs.lstatSync(path);
+      return stat.isDirectory();
+  } catch (e) {
+      // lstatSync throws an error if path doesn't exist
+      return false;
+  }
+}
+
 // get list of files in a directory
 function getFiles(dir) {
   const files = [];
   fs.readdirSync(dir).forEach((file) => {
-    const size = getReadableFileSize(path.join(dir, file));
-    files.push({ name: file, size });
+    const filePath = path.join(dir, file)
+    if(isDir(filePath)) {
+      files.push({type: "folder", name: file, files: getFiles(filePath)})
+    } else {
+      const size = getReadableFileSize(filePath);
+      files.push({ name: file, size });
+    }
   });
   return files;
+}
+
+function moveToServer(fileOrFolder) {
+  const s = path.join(__dirname, fileOrFolder);
+  const d = path.join(__dirname, "server", "public", "files", fileOrFolder);
+  moveToFolder(s, d)
+  process.exit()
 }
 
 if (process.argv.includes("--archive")) {
   const pos = process.argv.indexOf("--archive");
   const _foldername = process.argv[pos + 1];
   if (_foldername) archiveFolder(_foldername);
+}
+
+if (process.argv.includes("--move-to-server")) {
+  const pos = process.argv.indexOf("--move-to-server");
+  const _foldername = process.argv[pos + 1];
+  if (_foldername) moveToServer(_foldername)
 }
 
 module.exports = {
@@ -110,4 +142,5 @@ module.exports = {
   getSpeed,
   getFiles,
   getTimeInterval,
+  moveToServer
 };
