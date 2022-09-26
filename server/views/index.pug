@@ -21,7 +21,7 @@ style(type="text/css").
             if(f.type !== "folder")
               div.pl-5 #{idx+1}. 
                 - var path = "/files/" + file.name + "/" + f.name 
-                a(href=path download) #{f.name} 
+                a(href=path download=f.name) #{f.name} 
                 #{f.size}
 
             else
@@ -31,13 +31,13 @@ style(type="text/css").
                   if(f2.type !== "folder")
                     div.pl-5 #{idx2+1}. 
                       - var path = "/files/" + file.name + "/" + f.name + "/" + f2.name
-                      a(href=path download) #{f2.name} 
+                      a(href=path download=f2.name) #{f2.name} 
                       #{f2.size}
 
       else
         - var path = "/files/" + file.name
         div #{i+1}. 
-          a(href=path, download) #{file.name} 
+          a(href=path, download=file.name) #{file.name} 
           #{file.size}
 </body>
 </html>

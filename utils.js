@@ -65,7 +65,7 @@ function archiveFolder(foldername = "", move = true) {
   archive.finalize();
 }
 
-function moveToFolder(source, dest) {
+function moveToFolder(source, dest, cb = () => {}) {
   mv(
     source,
     dest,
@@ -73,6 +73,7 @@ function moveToFolder(source, dest) {
     function (err) {
       if (err) console.log("Error in moving: ", err);
       else console.log("moved to folder: ", dest);
+      cb();
     }
   );
 }
@@ -119,8 +120,7 @@ function getFiles(dir) {
 function moveToServer(fileOrFolder) {
   const s = path.join(__dirname, fileOrFolder);
   const d = path.join(__dirname, "server", "public", "files", fileOrFolder);
-  moveToFolder(s, d)
-  process.exit()
+  moveToFolder(s, d, () => process.exit())
 }
 
 if (process.argv.includes("--archive")) {
