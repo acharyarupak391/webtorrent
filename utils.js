@@ -123,8 +123,8 @@ function moveToServer(fileOrFolder) {
   moveToFolder(s, d, () => process.exit())
 }
 
-if (process.argv.includes("--archive")) {
-  const pos = process.argv.indexOf("--archive");
+if (process.argv.includes("--zip")) {
+  const pos = process.argv.indexOf("--zip");
   const _foldername = process.argv[pos + 1];
   if (_foldername) archiveFolder(_foldername);
 }

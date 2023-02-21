@@ -88,7 +88,7 @@ client.add(magnet, function (torrent) {
         readStream.destroy();
         writeStream.destroy();
 
-        if (process.argv.includes("--archive")) archiveFolder(torrent.name);
+        if (process.argv.includes("--zip")) archiveFolder(torrent.name);
         else if(process.argv.includes("--move-to-server")) moveToServer(torrent.name);
         else process.exit();
         
